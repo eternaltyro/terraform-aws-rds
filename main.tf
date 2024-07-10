@@ -74,9 +74,9 @@ resource "aws_security_group" "database" {
   }
 }
 
-resource "random_password" "database" {
-  length  = lookup(var.database, "password_length")
-  special = false
+data "aws_secretsmanager_random_password" "for-db" {
+  password_length     = lookup(var.database, "password_length")
+  exclude_punctuation = true
 }
 
 resource "random_pet" "db" {
@@ -90,7 +90,7 @@ resource "aws_rds_cluster" "database" {
   )
   database_name   = lookup(var.database, "name")
   master_username = lookup(var.database, "admin_user")
-  master_password = var.master_password != "" ? var.master_password : random_password.database.result
+  master_password = data.aws_secretsmanager_random_password.for-db.random_password
 
   engine         = "aurora-postgresql"
   engine_mode    = "provisioned"

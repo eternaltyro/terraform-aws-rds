@@ -37,14 +37,6 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-variable "master_password" {
-  description = "Master password supplied by the administrator; If set, this will be used over auto-generated password"
-  type        = string
-  sensitive   = true
-
-  default = ""
-}
-
 // NOTE: Password is generated automatically and stored in AWS Secrets Manager
 variable "database" {
   description = "PostgreSQL connection parameters and version."
